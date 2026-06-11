@@ -1,0 +1,130 @@
+#!/bin/bash
+
+# 切换 ESP32 板级配置脚本
+# 用法: ./chboard
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SDKCONFIG="$SCRIPT_DIR/sdkconfig"
+CRBOARD_FILE="$SCRIPT_DIR/crboard"
+
+# 显示当前状态
+if [ -f "$CRBOARD_FILE" ]; then
+    CURRENT_ID=$(cat "$CRBOARD_FILE")
+    case "$CURRENT_ID" in
+        cs3) CURRENT_NAME="M5Stack Core S3" ;;
+        t5)  CURRENT_NAME="M5Stack Tab5" ;;
+        cpt) CURRENT_NAME="M5Stack Cardputer" ;;
+        xiao) CURRENT_NAME="Seeed Studio XIAO ESP32S3 Sense" ;;
+        *)   CURRENT_NAME="未知 ($CURRENT_ID)" ;;
+    esac
+    echo "当前开发板: $CURRENT_NAME"
+else
+    echo "当前开发板: 未设置"
+fi
+echo "----------------------------------------"
+
+# 交互式菜单
+echo "请选择要切换的开发板:"
+echo "  1) M5Stack Core S3 (cs3)"
+echo "  2) M5Stack Tab5 (t5)"
+echo "  3) M5Stack Cardputer (cpt)"
+echo "  4) Seeed Studio XIAO ESP32S3 Sense (xiao)"
+echo "  q) 退出"
+echo ""
+
+read -p "请输入选项 [1/2/3/4/q]: " CHOICE
+
+case "$CHOICE" in
+    1|cs3)
+        BOARD="cs3"
+        BOARD_NAME="M5Stack Core S3"
+        SOURCE_CONFIG="$SCRIPT_DIR/sdkconfig-m5cs3"
+        ;;
+    2|t5)
+        BOARD="t5"
+        BOARD_NAME="M5Stack Tab5"
+        SOURCE_CONFIG="$SCRIPT_DIR/sdkconfig-m5t5"
+        ;;
+    3|cpt)
+        BOARD="cpt"
+        BOARD_NAME="M5Stack Cardputer"
+        SOURCE_CONFIG="$SCRIPT_DIR/sdkconfig-m5cpt"
+        ;;
+    4|xiao)
+        BOARD="xiao"
+        BOARD_NAME="Seeed Studio XIAO ESP32S3 Sense"
+        SOURCE_CONFIG="$SCRIPT_DIR/sdkconfig-xiao-sense"
+        ;;
+    q|Q)
+        echo "操作已取消"
+        exit 0
+        ;;
+    *)
+        echo "错误: 无效的输入 '$CHOICE'"
+        exit 1
+        ;;
+esac
+
+if [ ! -f "$SOURCE_CONFIG" ]; then
+    echo "错误: 配置文件 '$SOURCE_CONFIG' 不存在"
+    exit 1
+fi
+
+# 检查是否切换到相同的开发板
+if [ -f "$CRBOARD_FILE" ]; then
+    CURRENT_BOARD=$(cat "$CRBOARD_FILE")
+    if [ "$CURRENT_BOARD" = "$BOARD" ]; then
+        echo "当前已是 $BOARD_NAME 配置，无需切换"
+        exit 0
+    fi
+fi
+
+# 保存当前 sdkconfig 到对应的配置文件
+if [ -f "$SDKCONFIG" ]; then
+    if [ -f "$CRBOARD_FILE" ]; then
+        # 有记录当前开发板，保存到对应文件
+        CURRENT_BOARD=$(cat "$CRBOARD_FILE")
+        case "$CURRENT_BOARD" in
+            cs3)
+                CURRENT_CONFIG="$SCRIPT_DIR/sdkconfig-m5cs3"
+                CURRENT_BOARD_NAME="M5Stack Core S3"
+                ;;
+            t5)
+                CURRENT_CONFIG="$SCRIPT_DIR/sdkconfig-m5t5"
+                CURRENT_BOARD_NAME="M5Stack Tab5"
+                ;;
+            cpt)
+                CURRENT_CONFIG="$SCRIPT_DIR/sdkconfig-m5cpt"
+                CURRENT_BOARD_NAME="M5Stack Cardputer"
+                ;;
+            xiao)
+                CURRENT_CONFIG="$SCRIPT_DIR/sdkconfig-xiao-sense"
+                CURRENT_BOARD_NAME="Seeed Studio XIAO ESP32S3 Sense"
+                ;;
+            *)
+                CURRENT_CONFIG=""
+                ;;
+        esac
+        
+        if [ -n "$CURRENT_CONFIG" ]; then
+            echo "保存当前配置到 $CURRENT_CONFIG..."
+            cp "$SDKCONFIG" "$CURRENT_CONFIG"
+            echo "✓ 已保存 $CURRENT_BOARD_NAME 配置"
+        fi
+    else
+        # 没有记录当前开发板，备份到 sdkconfig.backup
+        echo "⚠ 未检测到当前开发板记录，备份 sdkconfig 到 sdkconfig.backup..."
+        cp "$SDKCONFIG" "$SCRIPT_DIR/sdkconfig.backup"
+        echo "✓ 已备份当前配置"
+    fi
+fi
+
+# 复制新配置
+echo "切换到 $BOARD_NAME 配置..."
+cp "$SOURCE_CONFIG" "$SDKCONFIG"
+
+# 记录当前使用的开发板
+echo "$BOARD" > "$CRBOARD_FILE"
+
+echo "✓ 已成功切换到 $BOARD_NAME 配置"
+echo "提示: 运行 'idf.py build' 重新构建项目"

@@ -1,0 +1,3 @@
+[submodule "components/wrapper-esp32"]
+	path = components/wrapper-esp32
+	url = https://github.com/Nixy4/wrapper-esp32
