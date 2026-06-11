@@ -1,0 +1,13 @@
+{
+    "C_Cpp.formatting": "clangFormat",
+    "C_Cpp.clang_format_style": "file",
+    "C_Cpp.clang_format_fallbackStyle": "LLVM",
+    "[c]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools"
+    },
+    "[cpp]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools"
+    },
+    "editor.formatOnSave": true,
+    "idf.currentSetup": "/home/nix/.espressif/v6.0.1/esp-idf"
+}

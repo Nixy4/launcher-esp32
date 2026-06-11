@@ -1,0 +1,28 @@
+{
+    "configurations": [
+        {
+            "name": "ESP-IDF-ESP32P4",
+            "compilerPath": "${env:IDF_TOOLS_PATH}/tools/riscv32-esp-elf/esp-15.2.0_20251204/riscv32-esp-elf/bin/riscv32-esp-elf-gcc",
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
+            "includePath": [
+                "${env:IDF_PATH}/components/**",
+                "${env:IDF_PATH}/components/**/include",
+                "${workspaceFolder}/main",
+                "${workspaceFolder}/build/config",
+                "${workspaceFolder}/components/wrapper-esp32/src",
+                "${workspaceFolder}/managed_components/**",
+                "${workspaceFolder}/managed_components/**/include"
+            ],
+            "browse": {
+                "path": [
+                    "${env:IDF_PATH}/components",
+                    "${workspaceFolder}/main",
+                    "${workspaceFolder}/build/config",
+                    "${workspaceFolder}/components/wrapper-esp32/src"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            }
+        }
+    ],
+    "version": 4
+}
