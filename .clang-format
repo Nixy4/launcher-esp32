@@ -1,0 +1,33 @@
+# 基础风格：以 Google 风格为起点。
+BasedOnStyle: Google
+# 每级缩进使用 4 个空格。
+IndentWidth: 4
+# 制表符显示宽度为 4（仅影响显示/对齐计算）。
+TabWidth: 4
+# 禁用 Tab，统一使用空格缩进。
+UseTab: Never
+# 指针符号靠近类型，例如 int* p。
+PointerAlignment: Left
+# 引用符号靠近类型，例如 int& r。
+ReferenceAlignment: Left
+# 单行最大列宽 100，超出时自动换行。
+ColumnLimit: 100
+# 参数换行时优先与 '(' 同行排布，减少单参数在 '(' 后断行。
+AlignAfterOpenBracket: Align
+# 续行使用一级缩进。
+ContinuationIndentWidth: 4
+# 函数声明参数换行时，禁止参数打包到同一行（每行一个参数）。
+BinPackParameters: false
+# 函数调用参数换行时，禁止参数打包到同一行（与声明风格保持一致）。
+# BinPackArguments: false
+# 声明处允许把参数整体放到下一行，触发在 '(' 后断行；配合 BinPackParameters 保持逐参数换行。
+AllowAllParametersOfDeclarationOnNextLine: true
+# 函数定义参数不做强制断行，单参数场景优先保持单行。
+BreakFunctionDefinitionParameters: false
+# 禁止将短 if 语句压成单行，提升可读性。
+AllowShortIfStatementsOnASingleLine: false
+# 大括号换行风格：Allman（左花括号独占新行）。
+BreakBeforeBraces: Allman
+# 禁止自动排序 include，保持手工分组顺序。
+SortIncludes: Never
+
